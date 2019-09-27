@@ -1,38 +1,32 @@
 package edu.eci.arep.client;
 
+import java.time.LocalTime;
+
 /**
  * Hello world!
  *
  */
 public class App {
-    private static final int threads = 5;
-    private static final String HEROKU_URL = "";
+    private static final int threads = 1;
 
     public static void main(String[] args) {
-        Thread[] tList= new Thread[threads];
+        Thread[] tList = new Thread[threads];
+        double begin = System.currentTimeMillis();
         for (int i = 0; i < threads; i++) {
-            Thread t = new Thread(){
-                public void run() {
-                    this.readFromUrl();
-                }
-            }.start();
-            tList[i]= t;
+            Thread t = new Thread(new MyThread());
+            t.start();
+            tList[i] = t;
         }
 
-        for (Thread t : tLThread) {
-            t.join();
-        }
-    }
-
-    public void readFromUrl() {
-        URL url = new URL(HEROKU_URL);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
-            String inputLine = null;
-            while ((inputLine = reader.readLine()) != null) {
-                System.out.println(inputLine);
+        for (Thread t : tList) {
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
-        } catch (IOException x) {
-            System.err.println(x);
         }
+        double end = System.currentTimeMillis();
+        System.out.println(end-begin);
     }
 }
